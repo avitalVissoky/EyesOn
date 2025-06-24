@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1D68BA6A2E08A68E00525721 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 1D68BA692E08A68E00525721 /* FirebaseAuth */; };
+		1D68BA6C2E08A68E00525721 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 1D68BA6B2E08A68E00525721 /* FirebaseDatabase */; };
+		1D68BA6E2E08A68E00525721 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 1D68BA6D2E08A68E00525721 /* FirebaseMessaging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1D68BA132E08847D00525721 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +35,22 @@
 		1D68BA1C2E08847D00525721 /* EyesOnUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EyesOnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1D68BA582E088AE500525721 /* Exceptions for "EyesOn" folder in "EyesOn" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 1D68BA042E08847900525721 /* EyesOn */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1D68BA072E08847900525721 /* EyesOn */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1D68BA582E088AE500525721 /* Exceptions for "EyesOn" folder in "EyesOn" target */,
+			);
 			path = EyesOn;
 			sourceTree = "<group>";
 		};
@@ -52,6 +71,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D68BA6E2E08A68E00525721 /* FirebaseMessaging in Frameworks */,
+				1D68BA6C2E08A68E00525721 /* FirebaseDatabase in Frameworks */,
+				1D68BA6A2E08A68E00525721 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +134,9 @@
 			);
 			name = EyesOn;
 			packageProductDependencies = (
+				1D68BA692E08A68E00525721 /* FirebaseAuth */,
+				1D68BA6B2E08A68E00525721 /* FirebaseDatabase */,
+				1D68BA6D2E08A68E00525721 /* FirebaseMessaging */,
 			);
 			productName = EyesOn;
 			productReference = 1D68BA052E08847900525721 /* EyesOn.app */;
@@ -195,6 +220,9 @@
 			);
 			mainGroup = 1D68B9FC2E08847900525721;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1D68BA682E0899F200525721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1D68BA062E08847900525721 /* Products */;
 			projectDirPath = "";
@@ -400,6 +428,10 @@
 				DEVELOPMENT_TEAM = 8KBT82Y2N7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EyesOn/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "EyesOn needs camera access to take photos for incident reports.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "EyesOn needs location access to tag reports and show nearby incidents.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "EyesOn needs photo library access to attach photos to incident reports.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -428,6 +460,10 @@
 				DEVELOPMENT_TEAM = 8KBT82Y2N7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EyesOn/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "EyesOn needs camera access to take photos for incident reports.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "EyesOn needs location access to tag reports and show nearby incidents.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "EyesOn needs photo library access to attach photos to incident reports.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -558,6 +594,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1D68BA682E0899F200525721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1D68BA692E08A68E00525721 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1D68BA682E0899F200525721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		1D68BA6B2E08A68E00525721 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1D68BA682E0899F200525721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		1D68BA6D2E08A68E00525721 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1D68BA682E0899F200525721 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1D68B9FD2E08847900525721 /* Project object */;
 }
