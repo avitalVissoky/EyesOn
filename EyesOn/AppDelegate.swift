@@ -7,25 +7,17 @@
 
 import UIKit
 import Firebase
-import FirebaseMessaging
 
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        
+        // Configure Firebase
         FirebaseApp.configure()
         
-        // Notifications
-        UNUserNotificationCenter.current().delegate = self
-        Messaging.messaging().delegate = self
-        
         return true
-    }
-    
-    // Optional: For APNs token registration
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Messaging.messaging().apnsToken = deviceToken
     }
 }

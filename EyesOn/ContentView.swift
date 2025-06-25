@@ -11,8 +11,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var firebaseService = FirebaseService.shared
     @StateObject private var locationManager = LocationManager.shared
-    @StateObject private var notificationManager = NotificationManager.shared
-    
+  
     var body: some View {
         Group {
             if firebaseService.isAuthenticated {
@@ -29,7 +28,7 @@ struct ContentView: View {
     
     private func setupApp() {
         locationManager.requestLocationPermission()
-        notificationManager.requestNotificationPermission()
+
     }
 }
 

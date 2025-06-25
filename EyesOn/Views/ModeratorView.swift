@@ -84,27 +84,6 @@ struct ModeratorReportRowView: View {
             Text(report.description)
                 .font(.body)
             
-            // Image if available (local storage)
-            if let imageUrl = report.imageUrl, !imageUrl.isEmpty {
-                if let localImage = FirebaseService.shared.loadLocalImage(path: imageUrl) {
-                    Image(uiImage: localImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 120)
-                        .clipped()
-                        .cornerRadius(8)
-                } else {
-                    Rectangle()
-                        .fill(Color(.systemGray5))
-                        .frame(height: 120)
-                        .cornerRadius(8)
-                        .overlay {
-                            Text("Image unavailable")
-                                .foregroundColor(.secondary)
-                        }
-                }
-            }
-            
             // Location
             HStack {
                 Image(systemName: "location")

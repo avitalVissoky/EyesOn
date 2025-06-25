@@ -577,38 +577,7 @@ struct ReportDetailSheet: View {
                             )
                     }
                     
-                    // Image if available
-                    if let imageUrl = report.imageUrl, !imageUrl.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Photo Evidence", systemImage: "photo")
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                            
-                            if let localImage = FirebaseService.shared.loadLocalImage(path: imageUrl) {
-                                Image(uiImage: localImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxHeight: 250)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                            } else {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(.systemGray5))
-                                    .frame(height: 150)
-                                    .overlay(
-                                        VStack {
-                                            Image(systemName: "photo.badge.exclamationmark")
-                                                .font(.title)
-                                                .foregroundColor(.secondary)
-                                            Text("Image not available")
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                        }
-                                    )
-                            }
-                        }
-                    }
-                    
+                  
                     // Details section
                     VStack(alignment: .leading, spacing: 12) {
                         Label("Report Details", systemImage: "info.circle")

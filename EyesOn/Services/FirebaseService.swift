@@ -96,20 +96,13 @@ class FirebaseService: ObservableObject {
     }
     
     // MARK: - Reports
-    func submitReport(_ report: Report, image: UIImage? = nil) async throws -> String {
-        // Handle image storage first if image exists
-        var imageUrl: String? = nil
-        if let image = image {
-            imageUrl = saveImageLocally(image, reportId: report.id)
-        }
-        
-        // Prepare report data
+    func submitReport(_ report: Report) async throws -> String {
+        // Prepare report data without image
         let reportData: [String: Any] = [
             "id": report.id,
             "userId": report.userId,
-            "category": report.category.rawValue, // Add category field
+            "category": report.category.rawValue,
             "description": report.description,
-            "imageUrl": imageUrl ?? NSNull(),
             "latitude": report.latitude,
             "longitude": report.longitude,
             "timestamp": report.timestamp.timeIntervalSince1970,
@@ -128,7 +121,6 @@ class FirebaseService: ObservableObject {
             }
         }
     }
-    
     func fetchApprovedReports() async throws -> [Report] {
         return try await withCheckedThrowingContinuation { continuation in
             database.child("reports")
@@ -190,16 +182,8 @@ class FirebaseService: ObservableObject {
                 }
             }
         }
-        
-        // Send notification to nearby users ONLY if approved
-        if status == .approved {
-            print("DEBUG: Report approved, sending notifications to nearby users for report: \(reportId)")
-            await NotificationManager.shared.sendNearbyReportNotification(reportId: reportId)
-        } else {
-            print("DEBUG: Report \(reportId) was \(status.rawValue), no notification sent")
-        }
+        // Remove: await NotificationManager.shared.sendNearbyReportNotification(reportId: reportId)
     }
-    
     // MARK: - Category-specific methods
     func fetchReportsByCategory(_ category: ReportCategory) async throws -> [Report] {
         return try await withCheckedThrowingContinuation { continuation in
@@ -305,7 +289,6 @@ class FirebaseService: ObservableObject {
             userId: userId,
             category: category, // Include category
             description: description,
-            imageUrl: data["imageUrl"] as? String,
             latitude: latitude,
             longitude: longitude,
             timestamp: Date(timeIntervalSince1970: timestamp),
@@ -314,29 +297,4 @@ class FirebaseService: ObservableObject {
         )
     }
 
-    // MARK: - Local Image Storage
-    private func saveImageLocally(_ image: UIImage, reportId: String) -> String? {
-        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            return nil
-        }
-        
-        let fileName = "\(reportId).jpg"
-        let fileURL = documentsDirectory.appendingPathComponent(fileName)
-        
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-            return nil
-        }
-        
-        do {
-            try imageData.write(to: fileURL)
-            return fileURL.path
-        } catch {
-            print("Error saving image locally: \(error)")
-            return nil
-        }
-    }
-
-    func loadLocalImage(path: String) -> UIImage? {
-        return UIImage(contentsOfFile: path)
-    }
 }

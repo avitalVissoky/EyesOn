@@ -40,49 +40,7 @@ struct SubmitReportView: View {
                             .foregroundColor(.secondary)
                     }
                     
-                    // Photo Section
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Photo (Optional)")
-                            .font(.headline)
-                        
-                        if let image = viewModel.selectedImage {
-                            ZStack(alignment: .topTrailing) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
-                                    .clipped()
-                                    .cornerRadius(12)
-                                
-                                Button(action: viewModel.removeImage) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.white)
-                                        .background(Circle().fill(Color.black.opacity(0.6)))
-                                }
-                                .padding(8)
-                            }
-                        } else {
-                            Button(action: { showingImageActionSheet = true }) {
-                                VStack(spacing: 12) {
-                                    Image(systemName: "camera.fill")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(.blue)
-                                    
-                                    Text("Add Photo")
-                                        .font(.headline)
-                                        .foregroundColor(.blue)
-                                    
-                                    Text("Take a photo or select from gallery")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                .frame(height: 150)
-                                .frame(maxWidth: .infinity)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(12)
-                            }
-                        }
-                    }
+
                     
                     // Location Info
                     VStack(alignment: .leading, spacing: 8) {
@@ -131,18 +89,6 @@ struct SubmitReportView: View {
             }
             .navigationTitle("Report Activity")
             .navigationBarTitleDisplayMode(.inline)
-            .confirmationDialog("Select Photo Source", isPresented: $showingImageActionSheet) {
-                Button("Camera") {
-                    viewModel.selectImageSource(.camera)
-                }
-                Button("Photo Library") {
-                    viewModel.selectImageSource(.photoLibrary)
-                }
-                Button("Cancel", role: .cancel) { }
-            }
-            .sheet(isPresented: $viewModel.showImagePicker) {
-                ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: viewModel.imageSourceType)
-            }
             .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
                 Button("OK") { viewModel.errorMessage = nil }
             } message: {

@@ -14,7 +14,6 @@ struct Report: Identifiable, Codable {
     let userId: String
     let category: ReportCategory
     let description: String
-    let imageUrl: String?
     let latitude: Double
     let longitude: Double
     let timestamp: Date
@@ -53,7 +52,6 @@ struct Report: Identifiable, Codable {
          userId: String,
          category: ReportCategory,
          description: String,
-         imageUrl: String? = nil,
          latitude: Double,
          longitude: Double,
          timestamp: Date = Date(),
@@ -63,7 +61,6 @@ struct Report: Identifiable, Codable {
         self.userId = userId
         self.category = category
         self.description = description
-        self.imageUrl = imageUrl
         self.latitude = latitude
         self.longitude = longitude
         self.timestamp = timestamp
@@ -77,7 +74,6 @@ struct Report: Identifiable, Codable {
         case userId
         case category
         case description
-        case imageUrl
         case latitude
         case longitude
         case timestamp
@@ -92,7 +88,6 @@ struct Report: Identifiable, Codable {
         userId = try container.decode(String.self, forKey: .userId)
         category = try container.decode(ReportCategory.self, forKey: .category)
         description = try container.decode(String.self, forKey: .description)
-        imageUrl = try container.decodeIfPresent(String.self, forKey: .imageUrl)
         latitude = try container.decode(Double.self, forKey: .latitude)
         longitude = try container.decode(Double.self, forKey: .longitude)
         timestamp = try container.decode(Date.self, forKey: .timestamp)
@@ -107,7 +102,6 @@ struct Report: Identifiable, Codable {
         try container.encode(userId, forKey: .userId)
         try container.encode(category, forKey: .category)
         try container.encode(description, forKey: .description)
-        try container.encodeIfPresent(imageUrl, forKey: .imageUrl)
         try container.encode(latitude, forKey: .latitude)
         try container.encode(longitude, forKey: .longitude)
         try container.encode(timestamp, forKey: .timestamp)

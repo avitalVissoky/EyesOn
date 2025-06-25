@@ -1,4 +1,3 @@
-
 //
 //  ReportViewModel.swift
 //  EyesOn
@@ -7,30 +6,17 @@
 //
 
 import SwiftUI
-import UIKit
 import CoreLocation
 
 class ReportViewModel: ObservableObject {
     @Published var selectedCategory: ReportCategory?
     @Published var description = ""
-    @Published var selectedImage: UIImage?
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var reportSubmittedSuccessfully = false
-    @Published var showImagePicker = false
     
-    var imageSourceType: UIImagePickerController.SourceType = .photoLibrary
     private let firebaseService = FirebaseService.shared
     private let locationManager = LocationManager.shared
-    
-    func selectImageSource(_ sourceType: UIImagePickerController.SourceType) {
-        imageSourceType = sourceType
-        showImagePicker = true
-    }
-    
-    func removeImage() {
-        selectedImage = nil
-    }
     
     func submitReport() async {
         await MainActor.run {
@@ -54,13 +40,12 @@ class ReportViewModel: ObservableObject {
                 throw ReportError.categoryNotSelected
             }
             
-            // Create report object
+            // Create report object (without image)
             let report = Report(
                 id: UUID().uuidString,
                 userId: currentUser.uid,
                 category: category,
                 description: description,
-                imageUrl: nil, // Will be set after image is saved
                 latitude: location.coordinate.latitude,
                 longitude: location.coordinate.longitude,
                 timestamp: Date(),
@@ -68,8 +53,8 @@ class ReportViewModel: ObservableObject {
                 moderatorId: nil
             )
             
-            // Submit report to Firebase
-            _ = try await firebaseService.submitReport(report, image: selectedImage)
+            // Submit report to Firebase (without image)
+            _ = try await firebaseService.submitReport(report)
             
             await MainActor.run {
                 isLoading = false
@@ -87,7 +72,6 @@ class ReportViewModel: ObservableObject {
     func resetForm() {
         selectedCategory = nil
         description = ""
-        selectedImage = nil
         errorMessage = nil
         reportSubmittedSuccessfully = false
     }

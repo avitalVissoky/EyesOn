@@ -1,11 +1,9 @@
-
 //
 //  LocationManager.swift
 //  EyesOn
 //
 //  Created by Avital on 22/06/2025.
 //
-
 import Foundation
 import CoreLocation
 
@@ -62,17 +60,6 @@ class LocationManager: NSObject, ObservableObject {
 extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = locations.last
-        
-        // Update user location and FCM token in Firebase for notifications
-        if let currentLocation = locations.last,
-           let userId = FirebaseService.shared.currentUser?.uid {
-            Task {
-                await NotificationManager.shared.updateUserLocationAndToken(
-                    location: currentLocation,
-                    userId: userId
-                )
-            }
-        }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
