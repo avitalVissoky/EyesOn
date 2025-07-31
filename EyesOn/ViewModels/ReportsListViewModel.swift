@@ -34,7 +34,6 @@ class ReportsListViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            // Load all approved reports for "All Reports" view
             let approvedReports = try await firebaseService.fetchApprovedReports()
             
             // Filter reports within 5km for "All Reports"
@@ -47,7 +46,6 @@ class ReportsListViewModel: ObservableObject {
                 allReports = approvedReports.sorted { $0.timestamp > $1.timestamp }
             }
             
-            // Load user's reports (all statuses) for "My Reports" view
             if let userId = currentUserId {
                 let userReportsData = try await firebaseService.fetchAllReportsForUser(userId: userId)
                 

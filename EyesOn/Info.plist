@@ -11,5 +11,15 @@
 		<string>remote-notification</string>
 		<string>processing</string>
 	</array>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.eyeson.background-polling</string>
+    </array>
+
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>background-processing</string>
+        <string>background-fetch</string>
+    </array>
 </dict>
 </plist>

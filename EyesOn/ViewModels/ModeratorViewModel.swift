@@ -68,7 +68,6 @@ class ModeratorViewModel: ObservableObject {
         do {
             try await firebaseService.updateReportStatus(report.id, status: status, moderatorId: moderatorId)
             
-            // Remove from pending list only after successful update
             pendingReports.removeAll { $0.id == report.id }
             
             print("DEBUG: Successfully updated report \(report.id) to \(status.rawValue)")

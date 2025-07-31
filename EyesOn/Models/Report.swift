@@ -68,7 +68,6 @@ struct Report: Identifiable, Codable {
         self.moderatorId = moderatorId
     }
     
-    // MARK: - Codable Implementation
     enum CodingKeys: String, CodingKey {
         case id
         case userId
@@ -109,7 +108,7 @@ struct Report: Identifiable, Codable {
         try container.encodeIfPresent(moderatorId, forKey: .moderatorId)
     }
     
-    // MARK: - MapKit Support
+
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }

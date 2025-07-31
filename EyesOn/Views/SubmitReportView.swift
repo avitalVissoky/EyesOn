@@ -15,7 +15,7 @@ struct SubmitReportView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 24) {
-                    // Category Selection Section - THIS WAS MISSING!
+
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Category")
                             .font(.headline)
@@ -24,7 +24,7 @@ struct SubmitReportView: View {
                         CategorySelectionView(selectedCategory: $viewModel.selectedCategory)
                     }
                     
-                    // Description Section
+
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Description")
                             .font(.headline)
@@ -40,9 +40,6 @@ struct SubmitReportView: View {
                             .foregroundColor(.secondary)
                     }
                     
-
-                    
-                    // Location Info
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Location")
                             .font(.headline)
@@ -60,7 +57,6 @@ struct SubmitReportView: View {
                         .cornerRadius(12)
                     }
                     
-                    // Submit Button
                     Button(action: {
                         Task { await viewModel.submitReport() }
                     }) {

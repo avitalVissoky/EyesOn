@@ -25,20 +25,47 @@ class FirebaseService: ObservableObject {
         setupAuthListener()
     }
     
+    private var authStateHandle: AuthStateDidChangeListenerHandle?
+
     private func setupAuthListener() {
-        auth.addStateDidChangeListener { [weak self] _, user in
-            DispatchQueue.main.async {
-                if let user = user {
-                    self?.fetchUserData(uid: user.uid)
-                } else {
-                    self?.currentUser = nil
-                    self?.isAuthenticated = false
+        authStateHandle = auth.addStateDidChangeListener { [weak self] _, user in
+            if let user = user {
+                Task {
+                    await self?.fetchUserData(uid: user.uid)
                 }
+            } else {
+                self?.currentUser = nil
+                self?.isAuthenticated = false
             }
         }
     }
 
-    // MARK: - Authentication
+//    private func setupAuthListener() {
+////        auth.addStateDidChangeListener { [weak self] _, user in
+////            DispatchQueue.main.async {
+////                if let user = user {
+////                    self?.fetchUserData(uid: user.uid)
+////                } else {
+////                    self?.currentUser = nil
+////                    self?.isAuthenticated = false
+////                }
+////            }
+////        }
+//        auth.addStateDidChangeListener { [weak self] _, user in
+//            DispatchQueue.main.async {
+//                if let user = user {
+//                    Task {
+//                        await self?.fetchUserData(uid: user.uid)
+//                    }
+//                } else {
+//                    self?.currentUser = nil
+//                    self?.isAuthenticated = false
+//                }
+//            }
+//        }
+//    }
+
+
     func signInAnonymously() async throws {
         let result = try await auth.signInAnonymously()
         let user = User(uid: result.user.uid, email: nil, isAnonymous: true)
@@ -70,34 +97,39 @@ class FirebaseService: ObservableObject {
         ]
         
         try await database.child("users").child(user.uid).setValue(userData)
-        
+
         DispatchQueue.main.async {
             self.currentUser = user
             self.isAuthenticated = true
         }
     }
     
-    private func fetchUserData(uid: String) {
-        database.child("users").child(uid).observeSingleEvent(of: .value) { [weak self] snapshot in
-            guard let data = snapshot.value as? [String: Any] else { return }
-            
-            let user = User(
-                uid: data["uid"] as? String ?? uid,
-                email: data["email"] as? String,
-                isAnonymous: data["isAnonymous"] as? Bool ?? false,
-                isModerator: data["isModerator"] as? Bool ?? false
-            )
-            
-            DispatchQueue.main.async {
-                self?.currentUser = user
-                self?.isAuthenticated = true
+    private func fetchUserData(uid: String) async {
+        await withCheckedContinuation { continuation in
+            database.child("users").child(uid).observeSingleEvent(of: .value) { [weak self] snapshot in
+                guard let data = snapshot.value as? [String: Any] else {
+                    continuation.resume()
+                    return
+                }
+
+                let user = User(
+                    uid: data["uid"] as? String ?? uid,
+                    email: data["email"] as? String,
+                    isAnonymous: data["isAnonymous"] as? Bool ?? false,
+                    isModerator: data["isModerator"] as? Bool ?? false
+                )
+
+                DispatchQueue.main.async {
+                    self?.currentUser = user
+                    self?.isAuthenticated = true
+                    continuation.resume()
+                }
             }
         }
     }
+
     
-    // MARK: - Reports
     func submitReport(_ report: Report) async throws -> String {
-        // Prepare report data without image
         let reportData: [String: Any] = [
             "id": report.id,
             "userId": report.userId,
@@ -110,7 +142,6 @@ class FirebaseService: ObservableObject {
             "moderatorId": NSNull()
         ]
         
-        // Save to Firebase
         return try await withCheckedThrowingContinuation { continuation in
             database.child("reports").child(report.id).setValue(reportData) { error, _ in
                 if let error = error {
@@ -182,9 +213,8 @@ class FirebaseService: ObservableObject {
                 }
             }
         }
-        // Remove: await NotificationManager.shared.sendNearbyReportNotification(reportId: reportId)
     }
-    // MARK: - Category-specific methods
+    
     func fetchReportsByCategory(_ category: ReportCategory) async throws -> [Report] {
         return try await withCheckedThrowingContinuation { continuation in
             database.child("reports")
@@ -280,14 +310,13 @@ class FirebaseService: ObservableObject {
             return nil
         }
         
-        // Handle category - provide default if missing for backward compatibility
         let categoryString = data["category"] as? String ?? "other"
         let category = ReportCategory(rawValue: categoryString) ?? .other
 
         return Report(
             id: id,
             userId: userId,
-            category: category, // Include category
+            category: category, 
             description: description,
             latitude: latitude,
             longitude: longitude,
@@ -296,5 +325,12 @@ class FirebaseService: ObservableObject {
             moderatorId: data["moderatorId"] as? String
         )
     }
+    
+    deinit {
+        if let handle = authStateHandle {
+            auth.removeStateDidChangeListener(handle)
+        }
+    }
+
 
 }

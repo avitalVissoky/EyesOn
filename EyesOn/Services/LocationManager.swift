@@ -15,7 +15,7 @@ class LocationManager: NSObject, ObservableObject {
     @Published var location: CLLocation?
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     
-    // Add this computed property for consistency with ReportViewModel
+
     var currentLocation: CLLocation? {
         return location
     }

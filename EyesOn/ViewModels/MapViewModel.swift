@@ -106,27 +106,22 @@ class MapViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            // Get all approved reports
             let allReports = try await firebaseService.fetchApprovedReports()
             
-            // Filter reports within 5km radius if user location is available
             if let userLocation = locationManager.currentLocation {
                 nearbyReports = locationManager.reportsWithin5km(
                     reports: allReports,
                     userLocation: userLocation
                 )
                 
-                // Update region to user location with constraints
                 let userRegion = MKCoordinateRegion(
                     center: userLocation.coordinate,
                     span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
                 )
                 region = constrainRegion(userRegion)
             } else {
-                // If no user location, show all reports
                 nearbyReports = allReports
                 
-                // Center map on reports if available
                 if let firstReport = allReports.first {
                     let reportRegion = MKCoordinateRegion(
                         center: CLLocationCoordinate2D(
@@ -171,7 +166,6 @@ class MapViewModel: ObservableObject {
         region = constrainRegion(focusRegion)
     }
     
-    // Add zoom control methods
     func zoomIn() {
         let newSpan = MKCoordinateSpan(
             latitudeDelta: region.span.latitudeDelta * 0.5,

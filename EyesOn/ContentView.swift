@@ -23,7 +23,7 @@ struct ContentView: View {
         .onAppear {
             setupApp()
         }
-        .preferredColorScheme(.none) // Respects system setting
+        .preferredColorScheme(.none)
     }
     
     private func setupApp() {

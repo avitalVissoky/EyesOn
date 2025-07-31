@@ -163,21 +163,6 @@ struct SelectedCategoryInfo: View {
     }
 }
 
-//struct SeverityBadge: View {
-//    let severity: ReportSeverity
-//    
-//    var body: some View {
-//        Text(severity.displayName)
-//            .font(.caption2)
-//            .fontWeight(.semibold)
-//            .padding(.horizontal, 8)
-//            .padding(.vertical, 4)
-//            .background(severity.color.opacity(0.2))
-//            .foregroundColor(severity.color)
-//            .clipShape(Capsule())
-//    }
-//}
-
 struct CategoryDetailView: View {
     let category: ReportCategory
     @Binding var selectedCategory: ReportCategory?

@@ -30,10 +30,8 @@ struct ReportListView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Scope Selector
                 ScopeSelectorView(selectedScope: $reportScope)
                 
-                // Filter Bar (only show for "All Reports")
                 if reportScope == .all && !viewModel.allReports.isEmpty {
                     FilterBarView(
                         selectedCategory: $selectedCategory,
@@ -43,7 +41,6 @@ struct ReportListView: View {
                     )
                 }
                 
-                // Reports List
                 if viewModel.isLoading {
                     LoadingView()
                 } else if filteredReports.isEmpty {
@@ -116,7 +113,6 @@ struct ReportListView: View {
     }
 }
 
-// MARK: - Scope Selector
 struct ScopeSelectorView: View {
     @Binding var selectedScope: ReportListView.ReportScope
     
@@ -223,7 +219,6 @@ struct FilterBarView: View {
     }
 }
 
-// MARK: - Report Card
 struct ReportCardView: View {
     let report: Report
     let isMyReport: Bool
@@ -233,7 +228,6 @@ struct ReportCardView: View {
     var body: some View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 12) {
-                // Header with category and time
                 HStack {
                     HStack(spacing: 8) {
                         ZStack {
@@ -275,14 +269,13 @@ struct ReportCardView: View {
                     }
                 }
                 
-                // Description
+                
                 Text(report.description)
                     .font(.body)
                     .foregroundColor(.primary)
                     .lineLimit(3)
                     .multilineTextAlignment(.leading)
                 
-                // Footer with location and status
                 HStack {
                     HStack(spacing: 4) {
                         Image(systemName: "location.fill")
@@ -332,7 +325,6 @@ struct ReportCardView: View {
     }
 }
 
-// MARK: - Badges
 struct SeverityBadge: View {
     let severity: ReportSeverity
     
@@ -363,7 +355,7 @@ struct StatusBadge: View {
     }
 }
 
-// MARK: - Loading View
+
 struct LoadingView: View {
     var body: some View {
         VStack(spacing: 16) {
@@ -378,7 +370,7 @@ struct LoadingView: View {
     }
 }
 
-// MARK: - Empty State
+
 struct EmptyStateView: View {
     let reportScope: ReportListView.ReportScope
     let hasReports: Bool

@@ -67,7 +67,6 @@ struct ModeratorReportRowView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Header
             HStack {
                 Text("Report #\(String(report.id.prefix(8)))")
                     .font(.caption)
@@ -80,11 +79,9 @@ struct ModeratorReportRowView: View {
                     .foregroundColor(.secondary)
             }
             
-            // Description
             Text(report.description)
                 .font(.body)
             
-            // Location
             HStack {
                 Image(systemName: "location")
                     .foregroundColor(.secondary)
@@ -93,9 +90,7 @@ struct ModeratorReportRowView: View {
                     .foregroundColor(.secondary)
             }
             
-            // Action Buttons
             HStack(spacing: 12) {
-                // Approve Button
                 Button(action: {
                     approveReport()
                 }) {
@@ -120,7 +115,7 @@ struct ModeratorReportRowView: View {
                 }
                 .disabled(isApproving || isRejecting || viewModel.isProcessing(report.id))
                 
-                // Reject Button
+                
                 Button(action: {
                     rejectReport()
                 }) {
@@ -156,7 +151,7 @@ struct ModeratorReportRowView: View {
     
     private func approveReport() {
         isApproving = true
-        print("🟢 APPROVE button tapped for report: \(report.id)")
+        print("APPROVE button tapped for report: \(report.id)")
         
         Task {
             await viewModel.approveReport(report)
@@ -168,7 +163,7 @@ struct ModeratorReportRowView: View {
     
     private func rejectReport() {
         isRejecting = true
-        print("🔴 REJECT button tapped for report: \(report.id)")
+        print("REJECT button tapped for report: \(report.id)")
         
         Task {
             await viewModel.rejectReport(report)

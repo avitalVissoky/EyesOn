@@ -4,18 +4,18 @@
 //
 //  Created by Avital on 22/06/2025.
 //
-
 import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var firebaseService = FirebaseService.shared
+    @StateObject private var notificationManager = PollingNotificationManager.shared
     @AppStorage("preferredColorScheme") private var preferredColorScheme = "system"
     @State private var showingSignOutAlert = false
+    @State private var showingNotificationSettings = false
     
     var body: some View {
         NavigationView {
             List {
-                // User Section
                 Section("Account") {
                     if let user = firebaseService.currentUser {
                         HStack {
@@ -49,7 +49,66 @@ struct SettingsView: View {
                     }
                 }
                 
-                // Appearance Section
+                Section("Notifications") {
+                    HStack {
+                        Image(systemName: "bell.fill")
+                            .foregroundColor(.blue)
+                            .frame(width: 24)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Safety Alerts")
+                                .font(.headline)
+                            Text(notificationManager.isPollingEnabled ? "Active" : "Disabled")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Toggle("", isOn: Binding(
+                            get: { notificationManager.isPollingEnabled },
+                            set: { enabled in
+                                if enabled {
+                                    notificationManager.startPolling()
+                                } else {
+                                    notificationManager.stopPolling()
+                                }
+                            }
+                        ))
+                    }
+                    .padding(.vertical, 4)
+                    
+                    Button("Notification Settings") {
+                        showingNotificationSettings = true
+                    }
+                    .foregroundColor(.blue)
+                    
+                    if notificationManager.isPollingEnabled {
+                        HStack {
+                            Text("Radius")
+                            Spacer()
+                            Text("\(Int(notificationManager.notificationRadius))m")
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        HStack {
+                            Text("Categories")
+                            Spacer()
+                            Text("\(notificationManager.enabledCategories.count) enabled")
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        if let lastPoll = notificationManager.lastPollingTime {
+                            HStack {
+                                Text("Last Check")
+                                Spacer()
+                                Text(lastPoll, style: .relative)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+                
                 Section("Appearance") {
                     Picker("Color Scheme", selection: $preferredColorScheme) {
                         Text("System").tag("system")
@@ -59,14 +118,9 @@ struct SettingsView: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
                 
-                // Privacy Section
                 Section("Privacy & Safety") {
                     NavigationLink(destination: Text("Location Settings")) {
                         Label("Location Settings", systemImage: "location")
-                    }
-                    
-                    NavigationLink(destination: Text("Notification Settings")) {
-                        Label("Notifications", systemImage: "bell")
                     }
                     
                     NavigationLink(destination: Text("Privacy Policy")) {
@@ -74,7 +128,6 @@ struct SettingsView: View {
                     }
                 }
                 
-                // Support Section
                 Section("Support") {
                     NavigationLink(destination: Text("Help & FAQ")) {
                         Label("Help & FAQ", systemImage: "questionmark.circle")
@@ -90,11 +143,16 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .sheet(isPresented: $showingNotificationSettings) {
+                NotificationSettingsView()
+            }
         }
         .alert("Sign Out", isPresented: $showingSignOutAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Sign Out", role: .destructive) {
                 do {
+                    // Stop notifications when signing out
+                    notificationManager.stopPolling()
                     try firebaseService.signOut()
                 } catch {
                     print("Sign out error: \(error.localizedDescription)")

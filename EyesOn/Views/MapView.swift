@@ -18,7 +18,6 @@ struct MapView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // Main Map
                 MapViewRepresentable(
                     region: $viewModel.region,
                     mapType: $mapType,
@@ -29,11 +28,9 @@ struct MapView: View {
                 )
                 .edgesIgnoringSafeArea(.top)
                 
-                // Overlay Controls
+                
                 VStack {
-                    // Top Controls
                     HStack {
-                        // Category Filter Button
                         Button(action: {
                             showingCategoryFilter = true
                         }) {
@@ -62,7 +59,6 @@ struct MapView: View {
                         
                         Spacer()
                         
-                        // Map Style Toggle
                         MapStyleToggle(currentMapType: $mapType)
                     }
                     .padding(.horizontal, 16)
@@ -70,13 +66,11 @@ struct MapView: View {
                     
                     Spacer()
                     
-                    // Bottom Controls
                     HStack {
                         CategoryLegendView()
                         
                         Spacer()
                         
-                        // Location Button
                         Button(action: {
                             viewModel.refreshLocation()
                         }) {
@@ -92,10 +86,10 @@ struct MapView: View {
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 100) // Space for tab bar
+                    .padding(.bottom, 100)
                 }
                 
-                // Loading Indicator
+
                 if viewModel.isLoading {
                     VStack {
                         ProgressView()
@@ -273,7 +267,7 @@ struct CategoryLegendView: View {
     }
 }
 
-// MARK: - MapViewRepresentable
+
 struct MapViewRepresentable: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
     @Binding var mapType: MKMapType
@@ -286,52 +280,43 @@ struct MapViewRepresentable: UIViewRepresentable {
         mapView.showsUserLocation = true
         mapView.userTrackingMode = .none
         
-        // Basic map configuration
+
         mapView.mapType = .standard
         mapView.showsCompass = false
         mapView.showsScale = false
         mapView.showsTraffic = false
         mapView.showsBuildings = true
-        mapView.showsPointsOfInterest = true
+        mapView.pointOfInterestFilter = .includingAll
         
-        // Enable all interactions including zoom
         mapView.isZoomEnabled = true
         mapView.isScrollEnabled = true
         mapView.isRotateEnabled = true
         mapView.isPitchEnabled = false
         
-        // Remove restrictive camera zoom range to allow free zooming
         mapView.cameraZoomRange = nil
         
-        // Set initial region immediately
         mapView.setRegion(region, animated: false)
         
         return mapView
     }
     
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        // Update map type if changed
         if mapView.mapType != mapType {
             mapView.mapType = mapType
         }
         
-        // Check if region needs updating (be more lenient to allow user zoom)
         let currentRegion = mapView.region
         let regionChanged = abs(currentRegion.center.latitude - region.center.latitude) > 0.05 ||
                            abs(currentRegion.center.longitude - region.center.longitude) > 0.05
         
-        // Only update region if there's a significant center change, not zoom level changes
         if regionChanged {
             var newRegion = region
-            // Preserve user's zoom level if they've zoomed manually
             if currentRegion.span.latitudeDelta > 0.001 && currentRegion.span.longitudeDelta > 0.001 {
-                // Use current zoom level if it's reasonable
                 newRegion.span = currentRegion.span
             }
             mapView.setRegion(newRegion, animated: true)
         }
         
-        // Update annotations
         context.coordinator.updateAnnotations(mapView: mapView, reports: reports)
     }
     
@@ -348,16 +333,13 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         func updateAnnotations(mapView: MKMapView, reports: [Report]) {
-            // Only update if reports actually changed
             let newAnnotationIds = Set(reports.map { $0.id })
             let currentAnnotationIds = Set(currentAnnotations.map { $0.report.id })
             
             if newAnnotationIds != currentAnnotationIds {
-                // Remove existing report annotations (keep user location)
                 let reportAnnotations = mapView.annotations.compactMap { $0 as? ReportAnnotation }
                 mapView.removeAnnotations(reportAnnotations)
                 
-                // Add new annotations
                 let newAnnotations = reports.map { ReportAnnotation(report: $0) }
                 mapView.addAnnotations(newAnnotations)
                 currentAnnotations = newAnnotations
@@ -365,8 +347,6 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            // Only update the binding if the change was significant
-            // This prevents interference with user zoom gestures
             let currentRegion = mapView.region
             let bindingRegion = parent.region
             
@@ -381,7 +361,6 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            // Return nil for user location to use default blue dot
             guard let reportAnnotation = annotation as? ReportAnnotation else {
                 return nil
             }
@@ -397,15 +376,12 @@ struct MapViewRepresentable: UIViewRepresentable {
                 annotationView.canShowCallout = false
             }
             
-            // Create the custom pin view
             let pinView = ReportPinView(report: reportAnnotation.report)
             let hostingController = UIHostingController(rootView: pinView)
             hostingController.view.backgroundColor = .clear
             
-            // Remove any existing subviews
             annotationView.subviews.forEach { $0.removeFromSuperview() }
             
-            // Add the new pin view
             annotationView.addSubview(hostingController.view)
             hostingController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -419,11 +395,9 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-            // Handle tap on report annotation
             if let reportAnnotation = view.annotation as? ReportAnnotation {
                 parent.onReportTap(reportAnnotation.report)
             }
-            // Deselect immediately to allow repeated taps
             mapView.deselectAnnotation(view.annotation, animated: false)
         }
         
@@ -434,7 +408,6 @@ struct MapViewRepresentable: UIViewRepresentable {
     }
 }
 
-// MARK: - ReportAnnotation
 class ReportAnnotation: NSObject, MKAnnotation {
     let report: Report
     
@@ -456,13 +429,11 @@ class ReportAnnotation: NSObject, MKAnnotation {
     }
 }
 
-// MARK: - ReportPinView
 struct ReportPinView: View {
     let report: Report
     
     var body: some View {
         VStack(spacing: 0) {
-            // Pin body
             ZStack {
                 Circle()
                     .fill(report.category.color)
@@ -560,7 +531,6 @@ struct ReportDetailSheet: View {
                     .background(Color(.systemGray6))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     
-                    // Description
                     VStack(alignment: .leading, spacing: 12) {
                         Label("Description", systemImage: "text.alignleft")
                             .font(.headline)
@@ -578,7 +548,6 @@ struct ReportDetailSheet: View {
                     }
                     
                   
-                    // Details section
                     VStack(alignment: .leading, spacing: 12) {
                         Label("Report Details", systemImage: "info.circle")
                             .font(.headline)
@@ -666,7 +635,6 @@ struct DetailRow: View {
     }
 }
 
-// MARK: - CategoryFilterSheet
 struct CategoryFilterSheet: View {
     @Binding var selectedCategory: ReportCategory?
     let onFilterChange: (ReportCategory?) -> Void
