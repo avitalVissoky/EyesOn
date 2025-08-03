@@ -12,8 +12,8 @@ import CoreLocation
 @MainActor
 class MapViewModel: ObservableObject {
     @Published var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 32.0853, longitude: 34.7818), // Tel Aviv default
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05) // Increased initial zoom level
+        center: CLLocationCoordinate2D(latitude: 32.0853, longitude: 34.7818),
+        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
     
     @Published var nearbyReports: [Report] = []
@@ -40,12 +40,11 @@ class MapViewModel: ObservableObject {
             locationManager.requestLocationPermission()
         }
         
-        // Start location updates if authorized
         if locationManager.authorizationStatus == .authorizedWhenInUse ||
            locationManager.authorizationStatus == .authorizedAlways {
             locationManager.startLocationUpdates()
             
-            // Update region to user's location if available
+
             if let userLocation = locationManager.currentLocation {
                 updateRegionToUserLocation(userLocation)
             }
@@ -55,15 +54,13 @@ class MapViewModel: ObservableObject {
     private func updateRegionToUserLocation(_ location: CLLocation) {
         region = MKCoordinateRegion(
             center: location.coordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02) // Slightly more zoomed out
+            span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
         )
     }
     
-    // Add method to validate and constrain region
     private func constrainRegion(_ newRegion: MKCoordinateRegion) -> MKCoordinateRegion {
         var constrainedRegion = newRegion
         
-        // Constrain zoom levels
         if constrainedRegion.span.latitudeDelta < minZoomLevel {
             constrainedRegion.span.latitudeDelta = minZoomLevel
         }
@@ -78,7 +75,6 @@ class MapViewModel: ObservableObject {
             constrainedRegion.span.longitudeDelta = maxZoomLevel
         }
         
-        // Constrain coordinates to valid ranges
         if constrainedRegion.center.latitude > 85 {
             constrainedRegion.center.latitude = 85
         }
@@ -96,7 +92,6 @@ class MapViewModel: ObservableObject {
         return constrainedRegion
     }
     
-    // Add method to update region with constraints
     func updateRegion(_ newRegion: MKCoordinateRegion) {
         region = constrainRegion(newRegion)
     }

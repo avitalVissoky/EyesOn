@@ -37,7 +37,6 @@ class ReportViewModel: ObservableObject {
                 throw ReportError.categoryNotSelected
             }
             
-            // Create report object (without image)
             let report = Report(
                 id: UUID().uuidString,
                 userId: currentUser.uid,

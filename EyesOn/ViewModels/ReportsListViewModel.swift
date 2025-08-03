@@ -49,7 +49,6 @@ class ReportsListViewModel: ObservableObject {
             if let userId = currentUserId {
                 let userReportsData = try await firebaseService.fetchAllReportsForUser(userId: userId)
                 
-                // Combine all user reports regardless of status
                 myReports = (userReportsData.approved + userReportsData.pending + userReportsData.rejected)
                     .sorted { $0.timestamp > $1.timestamp }
                 
