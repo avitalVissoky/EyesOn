@@ -40,32 +40,6 @@ class FirebaseService: ObservableObject {
         }
     }
 
-//    private func setupAuthListener() {
-////        auth.addStateDidChangeListener { [weak self] _, user in
-////            DispatchQueue.main.async {
-////                if let user = user {
-////                    self?.fetchUserData(uid: user.uid)
-////                } else {
-////                    self?.currentUser = nil
-////                    self?.isAuthenticated = false
-////                }
-////            }
-////        }
-//        auth.addStateDidChangeListener { [weak self] _, user in
-//            DispatchQueue.main.async {
-//                if let user = user {
-//                    Task {
-//                        await self?.fetchUserData(uid: user.uid)
-//                    }
-//                } else {
-//                    self?.currentUser = nil
-//                    self?.isAuthenticated = false
-//                }
-//            }
-//        }
-//    }
-
-
     func signInAnonymously() async throws {
         let result = try await auth.signInAnonymously()
         let user = User(uid: result.user.uid, email: nil, isAnonymous: true)

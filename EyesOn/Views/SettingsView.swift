@@ -151,7 +151,6 @@ struct SettingsView: View {
             Button("Cancel", role: .cancel) { }
             Button("Sign Out", role: .destructive) {
                 do {
-                    // Stop notifications when signing out
                     notificationManager.stopPolling()
                     try firebaseService.signOut()
                 } catch {

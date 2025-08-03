@@ -25,17 +25,14 @@ class ReportViewModel: ObservableObject {
         }
         
         do {
-            // Get current user
             guard let currentUser = firebaseService.currentUser else {
                 throw ReportError.userNotAuthenticated
             }
             
-            // Get current location
             guard let location = locationManager.currentLocation else {
                 throw ReportError.locationNotAvailable
             }
             
-            // Ensure category is selected
             guard let category = selectedCategory else {
                 throw ReportError.categoryNotSelected
             }
@@ -53,7 +50,6 @@ class ReportViewModel: ObservableObject {
                 moderatorId: nil
             )
             
-            // Submit report to Firebase (without image)
             _ = try await firebaseService.submitReport(report)
             
             await MainActor.run {

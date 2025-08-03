@@ -239,7 +239,6 @@ struct CategoryLegendView: View {
                             
                             Spacer()
                             
-                            // Severity indicator
                             Text(category.severity.displayName)
                                 .font(.caption2)
                                 .fontWeight(.medium)
@@ -402,7 +401,6 @@ struct MapViewRepresentable: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-            // Handle any custom overlays if needed
             return MKOverlayRenderer(overlay: overlay)
         }
     }
@@ -449,7 +447,6 @@ struct ReportPinView: View {
                     .foregroundColor(.white)
             }
             
-            // Pin pointer
             Triangle()
                 .fill(report.category.color)
                 .frame(width: 12, height: 10)

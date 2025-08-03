@@ -58,7 +58,7 @@ struct CategoryCard: View {
     var body: some View {
         Button(action: onSelect) {
             VStack(spacing: 12) {
-                // Icon container with improved design
+               
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(category.color.opacity(0.15))
@@ -73,7 +73,6 @@ struct CategoryCard: View {
                         .foregroundColor(category.color)
                 }
                 
-                // Category name with better spacing
                 Text(category.displayName)
                     .font(.caption)
                     .fontWeight(.semibold)
@@ -94,7 +93,7 @@ struct CategoryCard: View {
             .padding(.vertical, 16)
             .padding(.horizontal, 8)
             .frame(maxWidth: .infinity)
-            .frame(height: 140) // Fixed height for consistency
+            .frame(height: 140)
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(isSelected ? category.color.opacity(0.08) : Color(.systemBackground))
@@ -226,7 +225,7 @@ struct CategoryDetailView: View {
                 
                 Spacer()
                 
-                // Select Button
+
                 Button(action: {
                     selectedCategory = category
                     dismiss()

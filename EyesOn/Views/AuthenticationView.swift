@@ -14,7 +14,6 @@ struct AuthenticationView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 30) {
-                    // App Logo/Title
                     VStack(spacing: 16) {
                         Image(systemName: "shield.checkered")
                             .font(.system(size: 80))
@@ -31,7 +30,6 @@ struct AuthenticationView: View {
                     }
                     .padding(.top, 40)
                     
-                    // Quick Anonymous Sign In
                     VStack(spacing: 16) {
                         Button(action: {
                             Task { await viewModel.signInAnonymously() }
@@ -52,7 +50,6 @@ struct AuthenticationView: View {
                             .foregroundColor(.secondary)
                     }
                     
-                    // Email/Password Form
                     VStack(spacing: 16) {
                         TextField("Email", text: $viewModel.email)
                             .textFieldStyle(RoundedBorderTextFieldStyle())

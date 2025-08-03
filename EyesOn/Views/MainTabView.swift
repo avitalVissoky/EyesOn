@@ -47,7 +47,6 @@ struct MainTabView: View {
         }
         .accentColor(.blue)
         .overlay(
-            // Notification status indicator
             VStack {
                 HStack {
                     Spacer()
