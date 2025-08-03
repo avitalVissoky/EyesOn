@@ -43,5 +43,13 @@
 
 ## Screenshots
 
+<img alt="EyesOn_2" src="https://github.com/user-attachments/assets/a26a7819-cf40-40ce-a459-91d294d94274" style="height:400px;"/>
+<img alt="EyesOn_1" src="https://github.com/user-attachments/assets/2fe34026-5c1f-46b5-8ae4-62f333843152" style="height:400px;"/>
+<img alt="EyesOn_5" src="https://github.com/user-attachments/assets/7b944894-8519-4d4f-b66c-d2c7c0ef30b3" style="height:400px;"/>
+<img alt="EyesOn_4" src="https://github.com/user-attachments/assets/3b296ab6-a927-430e-8213-81d4b6027194" style="height:400px;"/>
+<img alt="EyesOn_3" src="https://github.com/user-attachments/assets/646ec37f-9ca2-44a8-96e7-b423c5db1a56" style="height:400px;"/>
+<img alt="EyesOn_" src="https://github.com/user-attachments/assets/b85dbeee-d57b-4454-988b-e22d4547344f"style="height:400px;" />
+
+
 ## License
 MIT License © 2025 Avital Vissoky
